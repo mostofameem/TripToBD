@@ -1,0 +1,12 @@
+name: restaurants
+services:
+  app:
+    container_name: restaurants
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6001:6001" 
+      - "3345:3345" 
+    env_file:     
+      - .env

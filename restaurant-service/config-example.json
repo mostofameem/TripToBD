@@ -1,0 +1,42 @@
+{
+  "mode":"debug",
+  "service_name":"xxxxxxxxxxxxxxxxxxx",
+  "http_port": 6001,
+  "grpc_port":3345,
+  "jwt_secret": "H656H6KH56K46KK4644654Y65YI6Y5Y",
+  "rabbitmq_url":"xxxxxxxxxxxxxxx",
+
+  "db": {
+        "host": "xxxxxxxxxxxxxxxx",
+        "port": 5432,
+        "name": "xxxxxxxxxxxx",
+        "userr": "xxxxxxxxxxxxxxxx",
+        "user": "xxxxxxxxxxx",
+        "pass": "xxxxxxxxxxxxxxx",
+        "max_idle_time_in_minute": 60,
+        "enable_ssl_mode": false
+    },
+    "migrations":"migrations",
+    "mongodb":{
+      "host":"xxxxxxxxxxxxxxxxxxxxx",
+      "port": 27017,
+      "name":"xxxxxxxxxxxxxxxx",
+      "user":"xxxxxxxxx",
+      "pass":"xxxxxxxxx",
+      "max_idle_time_in_minute": 60,
+      "enable_ssl_mode": false
+    },
+    "grpc_urls":{
+      "user":"xxxxxxxxxxxxxxxxx",
+      "posts":"localhost:4000"
+    },
+    "grpc_req_timeout_in_second":20,
+    "rmq_reconnect_delay":600,
+    "rmq_retry_interval":5,
+    "apm":{
+      "service_name":"post-service",
+      "server_ulr":"http://localhost:8200",
+      "environment":"test"
+    }
+
+}

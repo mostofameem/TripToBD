@@ -1,0 +1,38 @@
+{
+    "mode":"debug",
+    "service_name":"location-service",
+    "http_port": 6002,
+    "grpc_port":3345,
+    "jwt_secret": "H656H6KH56K46KK4644654Y65YI6Y5Y",
+
+    "db": {
+          "host": "127.0.0.1",
+          "port": 5432,
+          "name": "location-db",
+          "user": "usr",
+          "pass": "pass",
+          "max_idle_time_in_minute": 60,
+          "enable_ssl_mode": false
+      },
+      "migrations":"./migrations",
+      "mongodb":{
+        "host":"127.0.0.1",
+        "port": 27017,
+        "name":"location-db",
+        "user":"usr",
+        "pass":"pass",
+        "max_idle_time_in_minute": 60,
+        "enable_ssl_mode": false
+      },
+      "grpc_urls":{
+        "user":"localhost:4000",
+        "restaurant":"localhost:4000"
+      },
+      "grpc_req_timeout_in_second":20,
+      "apm":{
+        "service_name":"location-service",
+        "server_ulr":"http://localhost:8200",
+        "environment":"test"
+      }
+
+}

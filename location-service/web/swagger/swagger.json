@@ -1,0 +1,312 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Location Service",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:6002",
+      "description": "Local"
+    }
+  ],
+  "paths": {
+    "/add-location": {
+      "post": {
+        "summary": "Add Location",
+        "tags": ["Location"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "best_time": { "type": "string" },
+                  "picture_url": { "type": "string", "format": "uri" }
+                },
+                "required": ["title", "content", "best_time", "picture_url"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "string" },
+                    "message": { "type": "string" },
+                    "status": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid or missing location details" },
+          "500": { "description": "Internal Server Error - Unable to process the request" }
+        }
+      }
+    },
+    "/get-locations": {
+      "get": {
+        "summary": "Get Locations",
+        "tags": ["Location"],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ID": { "type": "integer" },
+                          "title": { "type": "string" },
+                          "best_time": { "type": "string" },
+                          "picture_url": { "type": "string" },
+                          "rating": { "type": "integer" },
+                          "created_at": { "type": "string", "format": "date-time" },
+                          "updated_at": { "type": "string", "format": "date-time" },
+                          "Isactive": { "type": "boolean" }
+                        }
+                      }
+                    },
+                    "message": { "type": "string" },
+                    "status": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal Server Error - Unable to retrieve locations" }
+        }
+      }
+    },
+    "/get-location": {
+      "get": {
+        "summary": "Get Location by ID",
+        "tags": ["Location"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "title": { "type": "string" },
+                    "content": { "type": "string" },
+                    "best_time": { "type": "string" },
+                    "picture_url": { "type": "string" },
+                    "rating": { "type": "number", "format": "float" },
+                    "voted": { "type": "integer" },
+                    "author": {
+                      "type": "object",
+                      "properties": {
+                        "userid": { "type": "integer" },
+                        "username": { "type": "string" }
+                      }
+                    },
+                    "restaurants": {
+                      "type": "array",
+                      "items": { "type": "integer" }
+                    },
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "comment_id": { "type": "integer" },
+                          "content": { "type": "string" },
+                          "author": {
+                            "type": "object",
+                            "properties": {
+                              "userid": { "type": "integer" },
+                              "username": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid or missing location ID" },
+          "500": { "description": "Internal Server Error - Unable to retrieve location" }
+        }
+      }
+    },
+    "/add-route": {
+      "post": {
+        "summary": "Add Route",
+        "tags": ["Route"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "location_id": { "type": "integer" },
+                  "routes": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "from": { "type": "string" },
+                          "to": { "type": "string" },
+                          "vehicle": { "type": "string" },
+                          "cost": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": ["location_id", "routes"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Route added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "status": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/get-route": {
+      "get": {
+        "summary": "Get Route by ID",
+        "tags": ["Route"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "routes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "from": { "type": "string" },
+                          "to": { "type": "string" },
+                          "vehicle": { "type": "string" },
+                          "cost": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid or missing route ID" },
+          "500": { "description": "Internal Server Error - Unable to retrieve route" }
+        }
+      }
+    },
+    "/add-review": {
+      "post": {
+        "summary": "Add Review",
+        "tags": ["Review"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "location_id": { "type": "integer" },
+                  "user_id": { "type": "integer" },
+                  "name": { "type": "string" },
+                  "content": { "type": "string" }
+                },
+                "required": ["location_id", "user_id", "name", "content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "status": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid or missing review details" },
+          "500": { "description": "Internal Server Error - Unable to process the review" }
+        }
+      }
+    }
+  }
+}

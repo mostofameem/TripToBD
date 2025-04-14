@@ -1,0 +1,526 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vehicles",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5005",
+      "description": "Local"
+    },
+    {
+      "url": "http://13.235.190.235:5005",
+      "description": "Development"
+    }
+  ],
+  "paths": {
+    "/hello": {
+      "get": {
+        "summary": "Hello Endpoint",
+        "description": "Returns a success message.",
+        "responses": {
+          "200": {
+            "description": "A success response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Stats"]
+      }
+    },    
+    "/api/v1/stats": {
+      "get": {
+        "summary": "Get System Stats",
+        "description": "Returns system statistics, including CPU and memory usage percentages and application stats.",
+        "responses": {
+          "200": {
+            "description": "Statistics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string",
+                          "example": "1.0.0"
+                        },
+                        "cpu": {
+                          "type": "object",
+                          "properties": {
+                            "sysCpuPerc": {
+                              "type": "number",
+                              "example": 2.98,
+                              "description": "System CPU usage percentage."
+                            },
+                            "appCpuPerc": {
+                              "type": "number",
+                              "example": 0.07,
+                              "description": "Application CPU usage percentage."
+                            },
+                            "cores": {
+                              "type": "integer",
+                              "example": 12,
+                              "description": "Number of CPU cores."
+                            }
+                          }
+                        },
+                        "memory": {
+                          "type": "object",
+                          "properties": {
+                            "sysMemPerc": {
+                              "type": "number",
+                              "example": 28.1,
+                              "description": "System memory usage percentage."
+                            },
+                            "sysMemUsedMb": {
+                              "type": "number",
+                              "example": 4411,
+                              "description": "System memory used in MB."
+                            },
+                            "sysMemTotalMb": {
+                              "type": "number",
+                              "example": 15696,
+                              "description": "Total system memory in MB."
+                            },
+                            "appMemPerc": {
+                              "type": "number",
+                              "example": 0.13,
+                              "description": "Application memory usage percentage."
+                            },
+                            "appMemUsedMb": {
+                              "type": "number",
+                              "example": 21,
+                              "description": "Application memory used in MB."
+                            }
+                          }
+                        },
+                        "appStats": {
+                          "type": "object",
+                          "properties": {
+                            "goroutines": {
+                              "type": "integer",
+                              "example": 21,
+                              "description": "Number of goroutines running in the application."
+                            },
+                            "threads": {
+                              "type": "integer",
+                              "example": 10,
+                              "description": "Number of threads used by the application."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success",
+                      "description": "Response message."
+                    },
+                    "status": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "Indicates if the request was successful."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Stats"]
+      }
+    },
+    "/add-vehicle": {
+      "post": {
+        "summary": "Add a new Vehicles",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "name" },
+                  "catagory": { "type": "string", "example": "catagory" },
+                  "picture_url": {"type": "string", "example": "mkksamkmdasdkmsa.com" },
+                  "description": { "type": "string", "example": "description" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicles added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "string", "example": "Vehicles added Successfully" },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vehicles"]
+      }
+    },
+    "/get-vehicle": {
+      "get": {
+        "summary": "Get details of a specific vehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 2 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 2 },
+                        "name": { "type": "string", "example": "this is name" },
+                        "catagory": { "type": "string", "example": "bus" },
+                        "description": { "type": "string", "example": "this is a bus description" },
+                        "picture_url": { "type": "string", "example": "" },
+                        "rating": { "type": "integer", "example": 0 },
+                        "vote_count": { "type": "integer", "example": 0 },
+                        "created_at": { "type": "string", "format": "date-time", "example": "2025-01-18T11:51:38.771316Z" },
+                        "updated_at": { "type": "string", "format": "date-time", "example": "2025-01-18T11:51:38.771316Z" },
+                        "is_active": { "type": "boolean", "example": false }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vehicles"]
+      }
+    },
+    "/get-vehicles": {
+      "get": {
+        "summary": "Get a paginated list of vehicles",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of vehicles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 1 },
+                          "name": { "type": "string", "example": "Test" },
+                          "catagory": { "type": "string", "example": "avg" },
+                          "description": { "type": "string", "example": "this is a description test" },
+                          "picture_url": { "type": "string", "example": "asdsadasdasas" },
+                          "rating": { "type": "integer", "example": 0 },
+                          "vote_count": { "type": "integer", "example": 0 },
+                          "created_at": { "type": "string", "format": "date-time", "example": "2025-01-02T12:19:23.135162Z" },
+                          "updated_at": { "type": "string", "format": "date-time", "example": "2025-01-02T12:19:23.135162Z" },
+                          "is_active": { "type": "boolean", "example": false }
+                        }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vehicles"]
+      }
+    },
+    "/add-routes": {
+      "post": {
+        "summary": "Add a new route",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vehicle_id": { "type": "integer", "example": 45 },
+                  "src": { "type": "string", "example": "dhaka" },
+                  "dest": { "type": "string", "example": "Cox's Bazar" },
+                  "catagory": { "type": "string", "example": "Business class" },
+                  "cost": { "type": "integer", "example": 2000 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Route added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "string", "example": "Route added successfully" },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["routes"]
+      }
+    },
+    "/get-routes/vehicle": {
+      "get": {
+        "summary": "Get routes for a specific vehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 45 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of routes for a vehicle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 2 },
+                          "vehicle_id": { "type": "integer", "example": 3 },
+                          "src": { "type": "string", "example": "Dhaka" },
+                          "dest": { "type": "string", "example": "Chittagong" },
+                          "catagory": { "type": "string", "example": "Business class" },
+                          "cost": { "type": "string", "example": "1000" }
+                        }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["routes"]
+      }
+    },
+    "/get-routes/location": {
+      "get": {
+        "summary": "Get routes between specific locations",
+        "parameters": [
+          {
+            "name": "dest",
+            "in": "query",
+            "schema": { "type": "string", "example": "Cox's Bazar" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "example": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "example": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Routes between locations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 1 },
+                          "vehicle_id": { "type": "integer", "example": 2 },
+                          "src": { "type": "string", "example": "dhaka" },
+                          "dest": { "type": "string", "example": "Cox's Bazar" },
+                          "catagory": { "type": "string", "example": "Business class" },
+                          "cost": { "type": "string", "example": "1200" }
+                        }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["routes"]
+      }
+    },
+    "/get-pics": {
+      "get": {
+        "summary": "Get pictures for a specific vehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of vehicle pictures",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 1 },
+                          "vehicle_id": { "type": "integer", "example": 1 },
+                          "image_url": { "type": "string", "example": "https://example.com/images/vehicle1.jpg" }
+                        }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Success" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if vehicleID is missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": ["pictures"]
+      }
+    },
+    "/add-pics": {
+      "post": {
+        "summary": "Add a picture for a specific vehicle",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vehicleId": { "type": "integer", "example": 1 },
+                  "url": { "type": "string", "example": "we3432eddf.dsjasandas" }
+                },
+                "required": ["vehicleId", "url"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Picture added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Picture added successfully" },
+                    "status": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request if input is invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": ["pictures"]
+      }
+    }
+  }
+}

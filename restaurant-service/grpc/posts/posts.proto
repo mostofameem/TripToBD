@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option go_package= "posts-service/grpc/posts";
+package posts;
+
+service PostService {
+    rpc addBranches (AddbranchesReq) returns (AddbranchesRes);
+    rpc getRestaurantId(getRestaurantIdReq)returns(getRestaurantIdRes);
+    rpc hello(Empty) returns (HelloResponse);
+}
+message getRestaurantIdReq {
+  int32 location_id=1;
+}
+message getRestaurantIdRes {
+  bool status =1;
+  repeated int32 restaurant_ids = 2;
+}
+
+message AddbranchesReq {
+  int32 location_id = 1;
+  int32 restaurant_id=2;
+}
+
+message AddbranchesRes {
+  bool status = 1;
+}
+message HelloResponse {
+  bool status = 1;
+}
+
+message Empty {
+}

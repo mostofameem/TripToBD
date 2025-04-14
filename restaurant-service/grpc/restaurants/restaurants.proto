@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package= "restaurants-service/grpc/restaurants";
+package restaurants;
+
+service RestaurantsService {
+    rpc hello(Empty) returns (HelloResponse);
+}
+
+message HelloResponse {
+  bool status = 1;
+}
+
+message Empty {
+}

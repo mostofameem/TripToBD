@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "post-service/grpc/users";
+package users;
+
+service UserService {
+  rpc GetUserName (GetUserNameReq) returns (GetUserNameRes) {}
+}
+
+message GetUserNameReq {
+  int32 user_id = 1;
+}
+
+message GetUserNameRes {
+  bool status =1;
+  string user_id = 2;
+  string name = 3;
+}
+
