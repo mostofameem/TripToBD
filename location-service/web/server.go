@@ -2,13 +2,13 @@ package web
 
 import (
 	"fmt"
+	"location-service/config"
+	"location-service/web/handlers"
+	"location-service/web/middlewares"
+	"location-service/web/swagger"
 	"log"
 	"log/slog"
 	"net/http"
-	"post-service/config"
-	"post-service/web/handlers"
-	"post-service/web/middlewares"
-	"post-service/web/swagger"
 	"sync"
 )
 

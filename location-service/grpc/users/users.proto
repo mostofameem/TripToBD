@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "post-service/grpc/users";
+option go_package = "location-service/grpc/users";
 package users;
 
 service UserService {

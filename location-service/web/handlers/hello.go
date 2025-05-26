@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"location-service/web/utils"
 	"net/http"
-	"post-service/web/utils"
 )
 
 func (handlers *Handlers) Hello(w http.ResponseWriter, r *http.Request) {

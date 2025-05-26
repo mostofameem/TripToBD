@@ -3,17 +3,18 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"location-service/location"
+	"location-service/web/utils"
 	"log/slog"
 	"net/http"
-	"post-service/location"
-	"post-service/web/utils"
+	"time"
 )
 
 type LocationReq struct {
-	Title      string `json:"title" validate:"required"`
-	Content    string `json:"content"`
-	BestTime   string `json:"best_time" validate:"required"`
-	PictureUrl string `json:"picture_url" validate:"required"`
+	Title      string `json:"title"                 validate:"required"`
+	Details    string `json:"details"               validate:"required"`
+	BestTime   string `json:"best_time"             validate:"required"`
+	PictureUrl string `json:"picture_url"           validate:"required"`
 }
 
 func (handlers *Handlers) AddLocation(w http.ResponseWriter, r *http.Request) {
@@ -31,11 +32,16 @@ func (handlers *Handlers) AddLocation(w http.ResponseWriter, r *http.Request) {
 		utils.SendError(w, http.StatusBadRequest, fmt.Errorf("invaild request body"))
 		return
 	}
-	err = handlers.locSvc.AddLocation(r.Context(), &location.Location{
-		Title:      locationReq.Title,
-		Content:    locationReq.Content,
-		BestTime:   locationReq.BestTime,
-		PictureUrl: locationReq.PictureUrl,
+	
+	err = handlers.locSvc.AddLocation(r.Context(), &location.AddLocationReq{
+		Title:        locationReq.Title,
+		Descriptions: locationReq.Details,
+		BestTime:     locationReq.BestTime,
+		PictureUrl:   locationReq.PictureUrl,
+		Rating:       0,
+		Voted:        0,
+		CreatedBy:    1,
+		CreatedAt:    time.Now(),
 	})
 	if err != nil {
 		slog.Error(err.Error())

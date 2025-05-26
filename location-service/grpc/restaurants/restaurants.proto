@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "post-service/grpc/restaurants";
+option go_package = "location-service/grpc/restaurants";
 package restaurants;
 
 service RestaurantService {

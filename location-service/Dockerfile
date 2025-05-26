@@ -1,4 +1,4 @@
-FROM golang:1.23.2-alpine3.20 AS builder
+FROM golang:1.24.9-alpine3.20 AS builder
 
 WORKDIR /app
 
@@ -19,6 +19,6 @@ COPY --from=builder /app/config.json .
 
 COPY --from=builder /app/migrations /app/migrations
 
-EXPOSE 6002 3345
+EXPOSE 8001 3345
 
 CMD ["/app/main", "-c", "/app/config.json"]

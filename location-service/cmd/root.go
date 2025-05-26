@@ -1,23 +1,26 @@
 package cmd
 
 import (
-	"post-service/config"
-	"post-service/grpc"
-	"post-service/location"
-	"post-service/route"
-	"post-service/web"
-	"post-service/web/handlers"
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
 )
 
-func Main() {
-	conf := config.GetConfig()
-	locSvc := location.NewService(conf)
-	routeSvc := route.NewRouteService()
-	handlers := handlers.NewHandlers(conf, locSvc, routeSvc)
-	grpc := grpc.NewGRPC(conf)
+var (
+	RootCmd = &cobra.Command{
+		Use:   "data-syncer",
+		Short: "data-syncer server binary",
+	}
+)
 
-	server := web.NewServer(conf, handlers)
-	server.Run()
-	grpc.Start()
-	server.Wg.Wait()
+func init() {
+	RootCmd.AddCommand(serveRestCmd)
+}
+
+func Execute() {
+	if err := RootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

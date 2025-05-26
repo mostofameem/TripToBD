@@ -1,8 +1,8 @@
 package web
 
 import (
+	"location-service/web/middlewares"
 	"net/http"
-	"post-service/web/middlewares"
 )
 
 func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manager) {
@@ -27,28 +27,31 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		),
 	)
 
-	mux.Handle(
-		"GET /get-locations",
-		manager.With(
-			http.HandlerFunc(server.handlers.GetLocations),
-		),
-	)
-	mux.Handle(
-		"POST /add-review",
-		manager.With(
-			http.HandlerFunc(server.handlers.AddReview),
-		),
-	)
-	mux.Handle(
-		"POST /add-route",
-		manager.With(
-			http.HandlerFunc(server.handlers.AddRoute),
-		),
-	)
-	mux.Handle(
-		"GET /get-route",
-		manager.With(
-			http.HandlerFunc(server.handlers.GetRoute),
-		),
-	)
+	// mux.Handle(
+	// 	"GET /get-locations",
+	// 	manager.With(
+	// 		http.HandlerFunc(server.handlers.GetLocations),
+	// 	),
+	// )
+
+	// mux.Handle(
+	// 	"POST /add-review",
+	// 	manager.With(
+	// 		http.HandlerFunc(server.handlers.AddReview),
+	// 	),
+	// )
+
+	// mux.Handle(
+	// 	"POST /add-route",
+	// 	manager.With(
+	// 		http.HandlerFunc(server.handlers.AddRoute),
+	// 	),
+	// )
+
+	// mux.Handle(
+	// 	"GET /get-route",
+	// 	manager.With(
+	// 		http.HandlerFunc(server.handlers.GetRoute),
+	// 	),
+	// )
 }

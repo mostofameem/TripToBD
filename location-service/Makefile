@@ -1,5 +1,5 @@
 MAIN:=./cmd/server
-TARGET:=post-service
+TARGET:=location-service
 WIN_TARGET:=${TARGET}.exe
 SERVER_CMD:=./${TARGET}
 PROTOC_DEST:=./

@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 
-	pb "post-service/grpc/posts"
+	pb "location-service/grpc/posts"
 
 	gRPC "google.golang.org/grpc"
 )

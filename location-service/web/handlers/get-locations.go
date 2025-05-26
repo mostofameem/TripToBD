@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"fmt"
+	"location-service/web/utils"
 	"net/http"
-	"post-service/web/utils"
-	"strconv"
 )
 
 func (handlers *Handlers) GetLocation(w http.ResponseWriter, r *http.Request) {
@@ -12,14 +11,13 @@ func (handlers *Handlers) GetLocation(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 
 	locationId := queryParams.Get("id")
-	id, err := strconv.Atoi(locationId)
 
-	if err != nil {
+	if locationId == "" {
 		utils.SendError(w, http.StatusBadRequest, fmt.Errorf("required id"))
 		return
 	}
 
-	locations, err := handlers.locSvc.GetLocation(r.Context(), id)
+	locations, err := handlers.locSvc.GetLocation(r.Context(), locationId)
 	if err != nil {
 		utils.SendError(w, http.StatusInternalServerError, err)
 		return
@@ -29,8 +27,8 @@ func (handlers *Handlers) GetLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handlers *Handlers) GetLocations(w http.ResponseWriter, r *http.Request) {
-	paginationParams := utils.GetPaginationParams(r, "ASC", "rating")
-	locations, err := handlers.locSvc.GetLocations(r.Context(), paginationParams)
+	paginationParams := utils.GetPaginationParams(r, "DESC", "rating")
+	locations, err := handlers.locSvc.GetLocationPage(r.Context(), paginationParams)
 	if err != nil {
 		utils.SendError(w, http.StatusInternalServerError, err)
 		return
