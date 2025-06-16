@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"post-service/config"
-	"post-service/grpc/users"
+	"location-service/config"
+	"location-service/grpc/users"
 	"sync"
 	"time"
 

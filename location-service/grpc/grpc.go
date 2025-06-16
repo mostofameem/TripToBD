@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"post-service/config"
+	"location-service/config"
 	"sync"
 )
 

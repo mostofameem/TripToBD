@@ -3,15 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"location-service/location"
+	"location-service/web/utils"
 	"log/slog"
 	"net/http"
-	"post-service/route"
-	"post-service/web/utils"
 )
 
 type AddRouteReq struct {
-	LocationId int            `json:"location_id" validate:"required"`
-	Routes     [][]route.Routes `json:"routes" validate:"required"`
+	LocationId string         `json:"locationId"  validate:"required"`
+	Routes     location.Route `json:"routes"      validate:"required"`
 }
 
 func (h *Handlers) AddRoute(w http.ResponseWriter, r *http.Request) {
@@ -29,11 +29,7 @@ func (h *Handlers) AddRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get user info from grpc extract id from grpc
-	err = h.routeSvc.AddRoutes(r.Context(), &route.RouteInfo{
-		LocationId: req.LocationId,
-		Route:      req.Routes,
-	})
+	err = h.locSvc.AddRoutes(r.Context(), req.LocationId, &req.Routes)
 	if err != nil {
 		utils.SendError(w, http.StatusInternalServerError, err)
 		return

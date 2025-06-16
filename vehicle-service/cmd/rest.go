@@ -27,34 +27,26 @@ func serveRest(cmd *cobra.Command, args []string) error {
 
 	db, err := repo.NewDB(cnf.DB)
 	if err != nil {
-		slog.Error("Failed to Connect with Database:", logger.Extra(map[string]any{
+		slog.Error("Failed to connect mongo database:", logger.Extra(map[string]any{
 			"error": err.Error(),
 		}))
 		return err
 	}
-	defer repo.CloseDB(db)
+	defer db.Db.Close()
 
-	err = repo.MigrateDB(db.Db, cnf.MigrationSource)
-	if err != nil {
-		slog.Error("Failed to Migrate Database:", logger.Extra(map[string]any{
-			"error": err.Error(),
-		}))
-		return err
-	}
-
-	vehiclesRepo := repo.NewVehiclesRepo(db)
-	routesRepo := repo.NewRoutesRepo(db)
+	vehicleRepo := repo.NewVehiclesRepo(db)
+	routeRepo := repo.NewRoutesRepo(db)
 	picRepo := repo.NewPicsRepo(db)
 	reviewRepo := repo.NewReviewsRepo(db)
 
-	vehicleSvc := vehicles.NewService(cnf, vehiclesRepo, routesRepo, picRepo, reviewRepo)
+	vehicleSvc := vehicles.NewService(cnf, vehicleRepo, routeRepo, picRepo, reviewRepo)
 
 	handlers := handlers.NewHandlers(cnf, vehicleSvc)
 
 	server := web.NewServer(cnf, handlers)
 	server.Run()
-	//grpc := grpc.NewGRPC(cnf, vehicleSvc)
-	// grpc.Start()
+	// //grpc := grpc.NewGRPC(cnf, vehicleSvc)
+	// // grpc.Start()
 	server.Wg.Wait()
 
 	return nil
