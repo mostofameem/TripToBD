@@ -15,12 +15,16 @@ type Route struct {
 	Cost        float32 `json:"cost"          bson:"cost"`
 }
 
-type RouteInfo struct {
-	LocationId int
-	Route      []Route
-}
-
-func (svc *service) AddRoutes(ctx context.Context, req *RouteInfo) error {
+func (svc *service) AddRoutes(ctx context.Context, locationId string, route *Route) error {
+	err := svc.routeRepo.AddRoutes(ctx, locationId, route)
+	if err != nil {
+		slog.Error("Failed to add routes", logger.Extra(map[string]any{
+			"err":        err.Error(),
+			"locationID": locationId,
+			"route":      route,
+		}))
+		return err
+	}
 
 	return nil
 }

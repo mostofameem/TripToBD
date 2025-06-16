@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	LocationCollName = "locations"
+	LocationCollName = "location"
 )
 
 type LocationRepo interface {
@@ -84,27 +84,31 @@ func (repo *locationRepo) GetOne(ctx context.Context, idStr string) (*entity.Loc
 	return &location, nil
 }
 
-func (repo *locationRepo) GetPage(ctx context.Context, params *location.GetPageWithFilter) ([]*entity.Location, error) {
+func (repo *locationRepo) GetPage(ctx context.Context, params *location.GetPageWithFilter) (*[]location.LocationPageResponse, error) {
 	builder := NewMongoQueryBuilder().
-		AddRegex("title", params.Title).
-		AddEqual("best_time", params.BestTime).
+		AddRegex("title", *params.Title).
+		AddRegex("best_time", *params.BestTime).
 		SetPagination(params.Page, params.Limit).
 		SetSorting(params.SortBy, params.SortOrder).
-		SetProjection("title", "picture_url", "rating")
+		SetProjection("_id", "title", "picture_url", "rating")
 
 	filter, opts := builder.Build()
 
 	cursor, err := repo.DB.Collection(LocationCollName).Find(ctx, filter, opts)
 	if err != nil {
-		slog.Error("Failed to query locations", "error", err)
+		slog.Error("Failed to execute query", logger.Extra(map[string]any{
+			"error": err.Error(),
+		}))
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	var results []*entity.Location
+	var results []location.LocationPageResponse
 	if err = cursor.All(ctx, &results); err != nil {
-		slog.Error("Failed to decode locations", "error", err)
+		slog.Error("Failed to decode locations", logger.Extra(map[string]any{
+			"error": err.Error(),
+		}))
 		return nil, err
 	}
-	return results, nil
+	return &results, nil
 }

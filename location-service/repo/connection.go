@@ -59,13 +59,13 @@ func ConnectMongoDB(cnf config.MongoDBConfig) (*MongoDBClient, error) {
 
 	clientOptions := options.Client().
 		ApplyURI(uri).
-		SetAuth(options.Credential{
-			Username:   cnf.GetUser(),
-			Password:   cnf.GetPassword(),
-			AuthSource: cnf.GetAuthSource(),
-		}).
-		SetMaxPoolSize(cnf.GetMaxPoolSize()).
-		SetMinPoolSize(cnf.GetMinPoolSize()).
+		// SetAuth(options.Credential{
+		// 	Username:   cnf.GetUser(),
+		// 	Password:   cnf.GetPassword(),
+		// 	AuthSource: cnf.GetAuthSource(),
+		// }).
+		//SetMaxPoolSize(cnf.GetMaxPoolSize()).
+		//SetMinPoolSize(cnf.GetMinPoolSize()).
 		SetMaxConnIdleTime(time.Duration(cnf.GetMaxConnIdleTimeInMs()) * time.Millisecond)
 
 	client, err := mongo.Connect(ctx, clientOptions)

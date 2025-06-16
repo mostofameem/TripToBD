@@ -11,10 +11,10 @@ import (
 )
 
 type LocationReq struct {
-	Title      string `json:"title"                 validate:"required"`
-	Details    string `json:"details"               validate:"required"`
-	BestTime   string `json:"best_time"             validate:"required"`
-	PictureUrl string `json:"picture_url"           validate:"required"`
+	Title      string `json:"title"                validate:"required"`
+	Details    string `json:"details"              validate:"required"`
+	BestTime   string `json:"bestTime"             validate:"required"`
+	PictureUrl string `json:"pictureUrl"           validate:"required"`
 }
 
 func (handlers *Handlers) AddLocation(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +32,7 @@ func (handlers *Handlers) AddLocation(w http.ResponseWriter, r *http.Request) {
 		utils.SendError(w, http.StatusBadRequest, fmt.Errorf("invaild request body"))
 		return
 	}
-	
+
 	err = handlers.locSvc.AddLocation(r.Context(), &location.AddLocationReq{
 		Title:        locationReq.Title,
 		Descriptions: locationReq.Details,

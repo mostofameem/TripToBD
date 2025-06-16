@@ -41,10 +41,48 @@ func (svc *service) GetLocation(ctx context.Context, id string) (*entity.Locatio
 		return nil, err
 	}
 
+	if locations == nil {
+		slog.Error("No location found", logger.Extra(map[string]any{
+			"id": id,
+		}))
+	}
+
 	return locations, nil
 }
 
-func (svc *service) GetLocationPage(ctx context.Context, req utils.PaginationParams) (*[]entity.Location, error) {
+func (svc *service) GetLocationPage(ctx context.Context, req utils.PaginationParams) (*[]LocationPageResponse, error) {
+	var (
+		title    string
+		bestTime string
+	)
+	if req.Filters != nil {
+		if v, ok := req.Filters["title"]; ok && v != nil {
+			if s, ok := v.(string); ok {
+				title = s
+			}
+		}
+		if v, ok := req.Filters["bestTime"]; ok && v != nil {
+			if s, ok := v.(string); ok {
+				bestTime = s
+			}
+		}
+	}
 
-	return nil, nil
+	locs, err := svc.locationRepo.GetPage(ctx, &GetPageWithFilter{
+		Title:     &title,
+		BestTime:  &bestTime,
+		Page:      req.Page,
+		Limit:     req.Limit,
+		SortBy:    req.SortBy,
+		SortOrder: req.SortOrder,
+	})
+	if err != nil {
+		slog.Error("failed to get locations", logger.Extra(map[string]any{
+			"error": err.Error(),
+			"req":   req,
+		}))
+		return nil, err
+	}
+
+	return locs, nil
 }

@@ -23,11 +23,11 @@
                 "type": "object",
                 "properties": {
                   "title": { "type": "string" },
-                  "content": { "type": "string" },
-                  "best_time": { "type": "string" },
-                  "picture_url": { "type": "string", "format": "uri" }
+                  "details": { "type": "string" },
+                  "bestTime": { "type": "string" },
+                  "pictureUrl": { "type": "string", "format": "uri" }
                 },
-                "required": ["title", "content", "best_time", "picture_url"]
+                "required": ["title", "details", "bestTime", "pictureUrl"]
               }
             }
           }
@@ -58,6 +58,18 @@
         "summary": "Get Locations",
         "tags": ["Location"],
         "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "bestTime",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
           {
             "name": "limit",
             "in": "query",
@@ -182,20 +194,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "location_id": { "type": "integer" },
+                  "location_id": { "type": "string" },
                   "routes": {
-                    "type": "array",
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "from": { "type": "string" },
-                          "to": { "type": "string" },
-                          "vehicle": { "type": "string" },
-                          "cost": { "type": "integer" }
-                        }
-                      }
+                      "type": "object",
+                      "properties": {
+                      "from": { "type": "string" },
+                      "to": { "type": "string" },
+                      "vehicleType": { "type": "string" },
+                      "cost": { "type": "integer" }
                     }
                   }
                 },
@@ -233,7 +239,7 @@
             "name": "id",
             "in": "query",
             "required": true,
-            "schema": { "type": "integer" }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -264,47 +270,6 @@
           },
           "400": { "description": "Bad Request - Invalid or missing route ID" },
           "500": { "description": "Internal Server Error - Unable to retrieve route" }
-        }
-      }
-    },
-    "/add-review": {
-      "post": {
-        "summary": "Add Review",
-        "tags": ["Review"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "location_id": { "type": "integer" },
-                  "user_id": { "type": "integer" },
-                  "name": { "type": "string" },
-                  "content": { "type": "string" }
-                },
-                "required": ["location_id", "user_id", "name", "content"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Review added successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": { "type": "string" },
-                    "status": { "type": "boolean" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "description": "Bad Request - Invalid or missing review details" },
-          "500": { "description": "Internal Server Error - Unable to process the review" }
         }
       }
     }

@@ -33,5 +33,6 @@ func (handlers *Handlers) GetLocations(w http.ResponseWriter, r *http.Request) {
 		utils.SendError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	utils.SendData(w, locations)
 }

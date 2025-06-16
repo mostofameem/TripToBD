@@ -9,8 +9,8 @@ import (
 
 var (
 	RootCmd = &cobra.Command{
-		Use:   "data-syncer",
-		Short: "data-syncer server binary",
+		Use:   "locatoin-service",
+		Short: "locatoin-service server binary",
 	}
 )
 

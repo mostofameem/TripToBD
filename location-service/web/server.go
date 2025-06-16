@@ -6,7 +6,6 @@ import (
 	"location-service/web/handlers"
 	"location-service/web/middlewares"
 	"location-service/web/swagger"
-	"log"
 	"log/slog"
 	"net/http"
 	"sync"
@@ -48,7 +47,7 @@ func (server *Server) Start() {
 
 		addr := fmt.Sprintf(":%d", conf.HttpPort)
 
-		log.Println(fmt.Sprintf("Http Server Listening at %s", addr))
+		slog.Info(fmt.Sprintf("Http Server Listening at %s", addr))
 
 		if err := http.ListenAndServe(addr, handler); err != nil {
 			slog.Error(err.Error())
