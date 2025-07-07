@@ -3,12 +3,12 @@ package swagger
 import (
 	"embed"
 	"fmt"
+	"location-service/config"
+	"location-service/web/middlewares"
+	"location-service/web/utils"
 	"mime"
 	"net/http"
 	"path"
-	"post-service/config"
-	"post-service/web/middlewares"
-	"post-service/web/utils"
 	"strings"
 )
 
@@ -30,7 +30,7 @@ func serveSwagger(w http.ResponseWriter, r *http.Request) {
 	if strings.HasSuffix(filePath, "swagger.json") {
 		data, err := swaggerFS.ReadFile("swagger.json")
 		if err != nil {
-			utils.SendError(w, http.StatusNotFound, fmt.Errorf("File not found"))
+			utils.SendError(w, http.StatusNotFound, fmt.Errorf("file not found"))
 			return
 		}
 		w.Header().Add("Content-Type", "application/json")
@@ -42,7 +42,7 @@ func serveSwagger(w http.ResponseWriter, r *http.Request) {
 	// for static dist files
 	data, err := distFS.ReadFile(path.Join("dist", filePath))
 	if err != nil {
-		utils.SendError(w, http.StatusNotFound, fmt.Errorf("File not found"))
+		utils.SendError(w, http.StatusNotFound, fmt.Errorf("file not found"))
 		return
 	}
 	ext := path.Ext(filePath)

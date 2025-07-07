@@ -1,7 +1,7 @@
 package main
 
-import "post-service/cmd"
+import "location-service/cmd"
 
 func main() {
-	cmd.Main()
+	cmd.Execute()
 }

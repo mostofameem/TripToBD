@@ -34,7 +34,7 @@
     "rmq_reconnect_delay":600,
     "rmq_retry_interval":5,
     "apm":{
-      "service_name":"post-service",
+      "service_name":"location-service",
       "server_ulr":"http://localhost:8200",
       "environment":"test"
     }
