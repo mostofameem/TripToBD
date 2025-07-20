@@ -27,7 +27,6 @@ func LoadConfig() error {
 		Mode:            Mode(viper.GetString("MODE")),
 		ServiceName:     viper.GetString("SERVICE_NAME"),
 		HttpPort:        viper.GetInt("HTTP_PORT"),
-		GrpcPort:        viper.GetInt("GRPC_PORT"),
 		JwtSecret:       viper.GetString("JWT_SECREAT"),
 		MigrationSource: viper.GetString("MIGRATION_SOURCE"),
 		DB: &DBConfig{
@@ -39,7 +38,6 @@ func LoadConfig() error {
 			MaxIdleTimeInMinutes: viper.GetInt("MAX_IDLE_TIME_IN_MINUTE"),
 			EnableSSLMode:        viper.GetBool("ENABLE_SSL_MODE"),
 		},
-		GrpcReqTimeOutInSecond: viper.GetInt("GRPC_REQ_TIMEOUT_IN_SECOND"),
 	}
 	v := validator.New()
 	if err = v.Struct(config); err != nil {

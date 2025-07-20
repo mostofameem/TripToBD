@@ -44,7 +44,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
-          username: ubuntu  # Default for AWS EC2 Ubuntu instances
+          username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e  # Exit on error
