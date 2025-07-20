@@ -3,7 +3,7 @@ name: CI/CD Pipeline - Deploy to EC2
 on:
   push:
     branches:
-      - deployment-dev
+      - dev/vehicle
 
 jobs:
   build-and-deploy:
