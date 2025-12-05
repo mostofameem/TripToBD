@@ -45,8 +45,6 @@ func serveRest(cmd *cobra.Command, args []string) error {
 
 	server := web.NewServer(cnf, handlers)
 	server.Run()
-	// //grpc := grpc.NewGRPC(cnf, vehicleSvc)
-	// // grpc.Start()
 	server.Wg.Wait()
 
 	return nil

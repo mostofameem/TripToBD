@@ -7,6 +7,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5005:5005" 
-      - "3355:3355" 
     env_file:     
       - .env
