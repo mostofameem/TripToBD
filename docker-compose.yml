@@ -1,0 +1,163 @@
+# =============================================================================
+# TripToBD — Full-stack docker-compose
+# -----------------------------------------------------------------------------
+# Runs all 5 Go services against EXTERNAL PostgreSQL, MongoDB and RabbitMQ.
+# Configure everything from the root `.env` (copy .env.example -> .env).
+#
+# ONE-TIME BUILD PREP (required because some Dockerfiles bake config files):
+#   touch location-service/.env hotel-service/.env vehicle-service/.env
+#   cp restaurant-service/config-example.json restaurant-service/config.json
+#
+# Then:
+#   docker compose up --build -d
+# =============================================================================
+name: triptobd
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Identity Service (Auth & RBAC) — REST, PostgreSQL
+  # ---------------------------------------------------------------------------
+  identity-service:
+    build:
+      context: ./identity-service
+      dockerfile: Dockerfile
+    container_name: triptobd-identity
+    restart: unless-stopped
+    ports:
+      - "${IDENTITY_HTTP_PORT}:5001"
+    environment:
+      MODE: ${MODE}
+      SERVICE_NAME: identity-rbac
+      HTTP_PORT: 5001
+      JWT_SECRET: ${JWT_SECRET}
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${IDENTITY_DB_NAME}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASS: ${POSTGRES_PASS}
+      MAX_OPEN_CONNECTIONS: ${MAX_OPEN_CONNECTIONS}
+      MAX_IDLE_CONNECTIONS: ${MAX_IDLE_CONNECTIONS}
+      MAX_IDLE_TIME_IN_MINUTE: ${MAX_IDLE_TIME_IN_MINUTE}
+      ENABLE_SSL_MODE: ${ENABLE_SSL_MODE}
+      MIGRATION_SOURCE: ./internal/migrations
+      TOKEN_EXPIRE_TIME_IN_HOURS: ${TOKEN_EXPIRE_TIME_IN_HOURS}
+      EMAIL_INVITATION_TTL_IN_MINUTE: ${EMAIL_INVITATION_TTL_IN_MINUTE}
+      ACCESS_TOKEN_TTL_IN_MINUTE: ${ACCESS_TOKEN_TTL_IN_MINUTE}
+      REFRESH_TOKEN_TTL_IN_MINUTE: ${REFRESH_TOKEN_TTL_IN_MINUTE}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_EMAIL: ${MAIL_EMAIL}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL}
+      CLIENT_KEY: ${CLIENT_KEY}
+      SESSION_SECRET: ${SESSION_SECRET}
+      CALL_BACK_URL: ${CALL_BACK_URL}
+
+  # ---------------------------------------------------------------------------
+  # Location Service — REST + gRPC, MongoDB
+  # ---------------------------------------------------------------------------
+  location-service:
+    build:
+      context: ./location-service
+      dockerfile: Dockerfile
+    container_name: triptobd-location
+    restart: unless-stopped
+    ports:
+      - "${LOCATION_HTTP_PORT}:6002"
+      - "${LOCATION_GRPC_PORT}:3345"
+    environment:
+      MODE: ${MODE}
+      SERVICE_NAME: location-service
+      HTTP_PORT: 6002
+      GRPC_PORT: 3345
+      JWT_SECRET: ${JWT_SECRET}
+      # location reads a full connection string (MONGO_URI) + MONGO_DATABASE.
+      # Compose builds the standard mongodb:// URI from the values in .env.
+      MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/?authSource=${MONGO_AUTH_SOURCE}
+      MONGO_DATABASE: ${LOCATION_MONGO_DATABASE}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASS}
+      MONGO_MAX_CONN_IDLE_TIME_MS: 60000
+      GRPC_REQ_TIMEOUT_IN_SECOND: "20"
+
+  # ---------------------------------------------------------------------------
+  # Hotel Service — REST, PostgreSQL
+  # ---------------------------------------------------------------------------
+  hotel-service:
+    build:
+      context: ./hotel-service
+      dockerfile: Dockerfile
+    container_name: triptobd-hotel
+    restart: unless-stopped
+    ports:
+      - "${HOTEL_HTTP_PORT}:5005"
+      - "${HOTEL_GRPC_PORT}:3355"
+    environment:
+      MODE: ${MODE}
+      SERVICE_NAME: hotel-service
+      HTTP_PORT: 5005
+      GRPC_PORT: 3355
+      JWT_SECREAT: ${JWT_SECRET}          # NOTE: hotel reads JWT_SECREAT (typo in source)
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${HOTEL_DB_NAME}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASS: ${POSTGRES_PASS}
+      MAX_IDLE_TIME_IN_MINUTE: ${MAX_IDLE_TIME_IN_MINUTE}
+      ENABLE_SSL_MODE: ${ENABLE_SSL_MODE}
+      MIGRATION_SOURCE: ./migrations
+      GRPC_REQ_TIMEOUT_IN_SECOND: "20"
+
+  # ---------------------------------------------------------------------------
+  # Vehicle Service — REST, PostgreSQL
+  # ---------------------------------------------------------------------------
+  vehicle-service:
+    build:
+      context: ./vehicle-service
+      dockerfile: Dockerfile
+    container_name: triptobd-vehicle
+    restart: unless-stopped
+    ports:
+      - "${VEHICLE_HTTP_PORT}:5005"
+    environment:
+      MODE: ${MODE}
+      SERVICE_NAME: vehicle-service
+      HTTP_PORT: 5005
+      JWT_SECREAT: ${JWT_SECRET}          # NOTE: vehicle reads JWT_SECREAT (typo in source)
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${VEHICLE_DB_NAME}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASS: ${POSTGRES_PASS}
+      MAX_IDLE_TIME_IN_MINUTE: ${MAX_IDLE_TIME_IN_MINUTE}
+      ENABLE_SSL_MODE: ${ENABLE_SSL_MODE}
+      MIGRATION_SOURCE: ./migrations
+      GRPC_REQ_TIMEOUT_IN_SECOND: "20"
+
+  # ---------------------------------------------------------------------------
+  # Restaurant Service — REST + gRPC, PostgreSQL + MongoDB + RabbitMQ
+  # -----------------------------------------------------------------------------
+  # This service reads a JSON config file (config.json), not env vars, by design.
+  # Compose assembles that JSON from your `.env` and writes it at startup, so the
+  # global .env remains the single source of truth.
+  # -----------------------------------------------------------------------------
+  restaurant-service:
+    build:
+      context: ./restaurant-service
+      dockerfile: Dockerfile
+    container_name: triptobd-restaurant
+    restart: unless-stopped
+    depends_on:
+      - location-service
+    ports:
+      - "${RESTAURANT_HTTP_PORT}:6001"
+      - "3346:3345"
+    environment:
+      # Folded scalar -> one JSON line. ${VAR} is substituted from .env.
+      RESTAURANT_CONFIG_JSON: >
+        {"mode":"${MODE}","service_name":"restaurant-service","http_port":6001,"grpc_port":3345,"jwt_secret":"${JWT_SECRET}","rabbitmq_url":"${RABBITMQ_URL}","db":{"host":"${POSTGRES_HOST}","port":${POSTGRES_PORT},"name":"${RESTAURANT_DB_NAME}","user":"${POSTGRES_USER}","pass":"${POSTGRES_PASS}","max_idle_time_in_minute":${MAX_IDLE_TIME_IN_MINUTE},"enable_ssl_mode":${ENABLE_SSL_MODE}},"migrations":"migrations","mongodb":{"host":"${MONGO_HOST}","port":${MONGO_PORT},"name":"${RESTAURANT_MONGO_DB_NAME}","user":"${MONGO_USER}","pass":"${MONGO_PASS}","max_idle_time_in_minute":60,"enable_ssl_mode":false},"grpc_urls":{"posts":"location-service:3345"},"grpc_req_timeout_in_second":20,"rmq_reconnect_delay":600,"rmq_retry_interval":5}
+    # Write the assembled JSON to /app/config.json, then run the service.
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["printf '%s' \"$$RESTAURANT_CONFIG_JSON\" > /app/config.json && exec /app/main -c /app/config.json"]
